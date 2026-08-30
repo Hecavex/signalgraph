@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/Hecavex/signalgraph/security/advisories/new
+    about: Report vulnerabilities privately; do not open a public issue.
+  - name: Questions and ideas
+    url: https://github.com/Hecavex/signalgraph/discussions
+    about: Ask for help or discuss an idea before opening a focused issue.
+  - name: Licensing questions
+    url: https://hecavex.com
+    about: Contact Hecavex for uses outside the public license.

@@ -1,0 +1,52 @@
+name: Feature proposal
+description: Propose a focused SignalGraph improvement
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Explain the analyst problem first. Future-version scope is not considered active until the maintainer explicitly activates it.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and discussions for this proposal.
+          required: true
+        - label: This proposal is for lawful defensive-security use.
+          required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Analyst problem
+      description: What workflow or evidence problem needs to be solved?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe useful behavior without prescribing an implementation when possible.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: area
+    attributes:
+      label: Product area
+      options:
+        - Intelligence and provenance
+        - Collectors and enrichment
+        - Graph exploration
+        - Investigations and reports
+        - Operations and deployment
+        - Security and access control
+        - Documentation
+        - Other
+    validations:
+      required: true

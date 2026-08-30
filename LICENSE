@@ -1,0 +1,204 @@
+HECAVEX INTERNAL USE AND SECURITY RESEARCH LICENSE
+Version 1.0 — 2026-08-30
+
+Copyright (c) 2026 Deividas Lis. All rights reserved.
+
+SignalGraph is a Hecavex project.
+Hecavex: https://hecavex.com
+Maintainer: Deividas Lis — https://www.linkedin.com/in/deilis
+
+This is a source-available license. It is not an open-source license.
+
+1. DEFINITIONS
+
+"Software" means SignalGraph and any source code, object code,
+documentation, data files, or other material provided with this license.
+
+"Licensor" means Deividas Lis.
+
+"You" means the individual or legal entity exercising rights under this
+license.
+
+"Your Organization" means You, the legal entity for which You work, and
+entities that directly or indirectly control, are controlled by, or are under
+common control with that entity. "Control" means ownership of more than fifty
+percent of the voting interests or the legal power to direct management.
+
+"Authorized Personnel" means Your Organization's employees and individual
+contractors who need access for a permitted purpose, are bound by
+confidentiality obligations, and use the Software only on behalf of Your
+Organization.
+
+"Internal Use" means use solely for Your Organization's own operations,
+systems, networks, data, and defensive-security activities. Internal Use may
+support a for-profit business, but it does not include offering the Software,
+its functionality, or results produced as a service or deliverable to a third
+party.
+
+"Security Research" means lawful, good-faith defensive-security research
+performed on systems, networks, applications, or data that You own or are
+explicitly authorized to test.
+
+"Distribute" means to provide, publish, transmit, sublicense, sell, assign,
+share, or otherwise make any copy of the Software or a substantial portion of
+it available outside Your Organization.
+
+"Project URL" means the canonical SignalGraph repository URL identified in
+the Software's repository metadata or the repository URL from which You
+obtained the Software.
+
+2. LICENSE GRANT
+
+Subject to every term of this license, the Licensor grants You a worldwide,
+non-exclusive, non-transferable, non-sublicensable, royalty-free license to:
+
+a. install, run, reproduce, and privately modify the Software for Internal
+   Use;
+
+b. allow Authorized Personnel to exercise those rights solely for Your
+   Organization;
+
+c. use and privately modify the Software for Security Research; and
+
+d. create internal backups reasonably necessary for the permitted uses.
+
+The Licensor also grants You a patent license for patent claims the Licensor
+can license that are necessarily infringed by exercising the rights expressly
+granted above. That patent license applies only to permitted use of the
+Software and terminates if You or Your Organization initiates a patent claim
+alleging that the Software infringes a patent.
+
+3. PUBLICATIONS, BLOGS, VIDEOS, AND TALKS
+
+You may publish good-faith research results, reviews, tutorials, blog posts,
+videos, talks, screenshots, and short code excerpts about the Software. An
+excerpt must be no larger than reasonably necessary to explain the relevant
+technical point and must not substitute for the Software or enable its
+reconstruction.
+
+Every publication that substantially features the Software must:
+
+a. state that "SignalGraph is a Hecavex project created and maintained by
+   Deividas Lis";
+
+b. include the Project URL and https://hecavex.com; and
+
+c. identify Deividas Lis as the maintainer and, where the format supports
+   profile links, link to https://www.linkedin.com/in/deilis.
+
+If the publishing format cannot make links clickable, displaying the URLs as
+plain text satisfies the link requirement. If a platform permits only one
+external link, include the Project URL and state "Hecavex — Deividas Lis" in
+the publication itself.
+
+Advertising, sponsorship, or platform revenue attached to independent
+commentary or research does not by itself violate this license, provided the
+publication does not provide the Software, access to it, or its functionality
+as a product or service.
+
+4. RESTRICTIONS
+
+Except for the limited publication permission in Section 3, You must not:
+
+a. Distribute the Software, modified versions, binaries, containers, hosted
+   copies, mirrors, or substantial portions of the Software outside Your
+   Organization;
+
+b. sell, resell, sublicense, rent, lease, or charge for the Software or access
+   to its functionality;
+
+c. use the Software to provide software-as-a-service, managed security
+   services, monitoring, consulting deliverables, hosted analysis, or any
+   other service for a customer or third party;
+
+d. embed, bundle, or incorporate the Software into a product, service, or
+   commercial offering made available to a third party;
+
+e. publish modifications or derivative works;
+
+f. remove, obscure, or alter copyright, license, authorship, Hecavex, or
+   attribution notices;
+
+g. use the Software for unauthorized access, exploitation, credential
+   testing, malware delivery, unauthorized surveillance, destructive
+   activity, or any unlawful purpose; or
+
+h. imply sponsorship, certification, or endorsement by the Licensor or
+   Hecavex.
+
+Internal copies shared only with Authorized Personnel are not Distribution.
+Acquisition of consulting or support for Your Organization does not violate
+Section 4(c) when the provider acts only as Authorized Personnel for Your
+Organization and does not retain, reuse, or provide the Software to another
+party.
+
+5. PUBLIC SOURCE-HOSTING PLATFORMS
+
+If the Licensor publishes the Software in a public repository, the hosting
+platform's terms may separately permit access, viewing, or reproduction
+through built-in platform functionality. This license grants no additional
+right to fork or redistribute the Software.
+
+To the minimum extent required by the hosting platform's terms, an unmodified
+copy may exist through that platform's built-in fork functionality. This
+limited platform exception does not permit publishing modifications, creating
+release downloads, mirroring or reposting the Software, distributing it
+outside that platform, or exercising any use not granted in Section 2.
+
+6. OWNERSHIP, TRADEMARKS, AND SEPARATE LICENSES
+
+The Software is licensed, not sold. The Licensor retains all right, title, and
+interest in the Software. No trademark or branding rights are granted.
+
+The Licensor may offer separate written licenses, including licenses for
+distribution, commercial products, hosted services, managed services,
+consulting, or other uses not permitted here. A separate license changes Your
+rights only if it is signed by the Licensor.
+
+7. CONTRIBUTIONS
+
+This license does not grant the Licensor rights to Your modifications and does
+not establish contribution terms. Do not submit source-code contributions
+unless the repository's contribution policy permits them and You have agreed
+to any required separate contribution terms.
+
+8. NOTICES
+
+You must keep this license and all existing copyright and attribution notices
+with every permitted copy. You may copy and quote this license as reasonably
+necessary for compliance, legal review, and discussion of its terms.
+
+9. TERMINATION
+
+Your rights terminate automatically when You violate this license. If this is
+Your first violation and You cure it within thirty days after discovering it,
+Your rights are reinstated automatically as of the date of cure. Rights do not
+reinstate automatically after a repeated violation or a deliberate violation
+of Sections 3 or 4; reinstatement then requires the Licensor's express written
+permission.
+
+Sections that by their nature should survive termination, including ownership,
+notices, disclaimers, and limitations of liability, survive termination.
+
+10. DISCLAIMER OF WARRANTY
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SOFTWARE IS PROVIDED "AS IS" AND
+"AS AVAILABLE," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND
+NON-INFRINGEMENT. YOU BEAR ALL RISK ARISING FROM USE OF THE SOFTWARE.
+
+11. LIMITATION OF LIABILITY
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE LICENSOR WILL NOT BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, CONSEQUENTIAL, OR PUNITIVE
+DAMAGES, OR FOR LOST PROFITS, REVENUE, DATA, GOODWILL, OR BUSINESS
+INTERRUPTION, ARISING FROM OR RELATED TO THE SOFTWARE OR THIS LICENSE, UNDER
+ANY THEORY OF LIABILITY, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+12. GENERAL TERMS
+
+This license is the entire agreement for the rights it grants unless You and
+the Licensor sign a separate written agreement. If any provision is
+unenforceable, it will be limited to the minimum extent necessary and the
+remaining provisions will continue in effect. A failure to enforce a provision
+is not a waiver. You may not assign this license or Your rights under it.

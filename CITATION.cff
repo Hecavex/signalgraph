@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: If you use SignalGraph in research, please cite the project using this metadata.
+title: SignalGraph
+abstract: Self-hosted, explainable cyber threat intelligence with evidence-backed relationships, transparent risk scoring, investigations, and reporting.
+type: software
+version: 1.0.0
+authors:
+  - family-names: Lis
+    given-names: Deividas
+    alias: Deilis
+repository-code: https://github.com/Hecavex/signalgraph
+url: https://hecavex.com
+keywords:
+  - cyber threat intelligence
+  - CTI
+  - OSINT
+  - threat research
+  - STIX
+  - self-hosted

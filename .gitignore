@@ -1,0 +1,41 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+*.egg-info/
+*.db
+*.sqlite
+*.sqlite3
+
+# Node
+node_modules/
+.next/
+dist/
+coverage/
+.coverage
+test-results/
+playwright-report/
+blob-report/
+*.tsbuildinfo
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Runtime data, artifacts, and backups
+data/
+artifacts/
+backups/
+*.log
