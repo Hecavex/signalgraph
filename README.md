@@ -172,7 +172,7 @@ Future features are not treated as present until their version is explicitly act
 
 ## Project status and license
 
-v1 has passed its release-candidate audit, including clean Docker installation, backup/restore, security, migration, automated, and browser workflow checks. It should not be represented as a stable release until hosted CI passes and the maintainer tags v1.0.0.
+v1 has passed its release-candidate audit, including clean Docker installation, backup/restore, security, migration, automated, browser workflow, and hosted CI checks. It remains a release candidate until the maintainer explicitly tags and publishes v1.0.0 as stable.
 
 SignalGraph is source-available under the [Hecavex Internal Use and Security Research License 1.0](LICENSE), copyright Deividas Lis. Companies may run and privately modify it for their own internal operations, and lawful good-faith security research is permitted. Resale, redistribution, hosted or managed services, client deliverables, and public modified versions are not permitted. Publications that substantially feature SignalGraph must identify it as a Hecavex project, credit Deividas Lis, and include the required project and Hecavex links described in the license.
 
