@@ -19,6 +19,7 @@ All notable changes to SignalGraph will be documented here. The project follows 
 ### Changed
 
 - Completed the local v1.0.0 release-candidate audit across backend, frontend, clean Compose deployment, browser workflows, PostgreSQL backup/restore, and runtime enrichment/retry behavior.
+- Updated the jsdom test environment and removed the deprecated external Cytoscape type stub now that Cytoscape ships its own TypeScript declarations.
 
 ### Fixed
 
