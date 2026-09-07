@@ -5,7 +5,7 @@ RUN npm ci --no-audit --no-fund --legacy-peer-deps
 COPY . .
 RUN npm run build
 
-FROM nginx:1.30.4-alpine@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c AS runtime
+FROM nginx:1.31.5-alpine@sha256:72ba65eb42c10344912a84ff42408db7d34f2feb642204570ab8fc5ffd29f1d3 AS runtime
 # The pinned nginx image predates Alpine's util-linux security rebuild.
 # Keep this explicit until a reviewed base digest includes the patched package.
 RUN apk add --no-cache --upgrade 'libuuid=2.42.3-r1'
