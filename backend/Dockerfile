@@ -7,10 +7,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN groupadd --system signalgraph && useradd --system --gid signalgraph --home-dir /app signalgraph
 WORKDIR /app
 
-COPY pyproject.toml alembic.ini ./
+COPY pyproject.toml alembic.ini requirements.lock requirements-build.lock ./
 COPY app ./app
 COPY migrations ./migrations
-RUN pip install --upgrade pip && pip install .
+RUN pip install --require-hashes -r requirements-build.lock -r requirements.lock \
+    && pip install --no-deps --no-build-isolation . \
+    && pip check
 
 USER signalgraph
 EXPOSE 8000

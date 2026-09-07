@@ -135,7 +135,8 @@ The backend requires Python 3.12. The frontend uses Node.js 22 in its production
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -e ".\backend[dev]"
+.\.venv\Scripts\python.exe -m pip install --require-hashes -r backend/requirements-build.lock -r backend/requirements-dev.lock
+.\.venv\Scripts\python.exe -m pip install --no-deps --no-build-isolation -e ".\backend[dev]"
 cd frontend
 npm ci --legacy-peer-deps
 ```
@@ -152,6 +153,8 @@ npm run test:e2e
 ```
 
 See [development setup](docs/DEVELOPMENT.md), [compatibility policy](docs/COMPATIBILITY.md), and [contribution guidance](CONTRIBUTING.md).
+
+CI runs on pushes, pull requests, manual dispatch and a weekly schedule. Its container gate boots a disposable six-service stack, checks migrations and first-run administrator creation, tests a real queue round trip without external collection, and runs the existing synthetic Playwright workflows. Runtime and development Python dependencies use reviewed hash-checked locks. See [development and release assurance](docs/DEVELOPMENT.md) for updating them and the diagnostic boundary.
 
 ## Security model
 

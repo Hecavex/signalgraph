@@ -6,6 +6,9 @@ All notable changes to SignalGraph will be documented here. The project follows 
 
 ### Added
 
+- Recurring bounded v1 clean-stack assurance covering migrations, administrator creation, authentication, queue execution and the existing synthetic browser workflows.
+- Hash-checked runtime, development and build dependency locks shared by CI and production containers.
+
 - SignalGraph v1 application foundation with Docker Compose, FastAPI, React, PostgreSQL, Redis, Celery, and Alembic.
 - Local authentication, role-based access control, audit events, and first-run administrator creation.
 - Intelligence entities, observations, provenance, relationships, tags, confidence, and transparent risk scoring.
@@ -17,6 +20,8 @@ All notable changes to SignalGraph will be documented here. The project follows 
 - GitHub issue forms, community and support guidance, citation metadata, dependency update configuration, and repository discovery badges.
 
 ### Changed
+
+- CI diagnostics retain only allowlisted service status and synthetic failure screenshots, with authenticated traces excluded and a seven-day retention limit.
 
 - Completed the local v1.0.0 release-candidate audit across backend, frontend, clean Compose deployment, browser workflows, PostgreSQL backup/restore, and runtime enrichment/retry behavior.
 - Updated the jsdom test environment and removed the deprecated external Cytoscape type stub now that Cytoscape ships its own TypeScript declarations.
@@ -30,6 +35,8 @@ All notable changes to SignalGraph will be documented here. The project follows 
 - Preserve the analyst's collector selection through enrichment completion and job retry.
 
 ### Security
+
+- Require pytest 9.0.3 or newer in the development lock to address the reported [PYSEC-2026-1845 advisory](https://github.com/pypa/advisory-database/blob/main/vulns/pytest/PYSEC-2026-1845.yaml). Runtime dependencies are unchanged by this test-tool update.
 
 ### Deprecated
 
