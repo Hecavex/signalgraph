@@ -30,7 +30,7 @@ Collectors construct requests from fixed, code-owned service origins. RDAP resol
 - Pydantic validates and bounds API input.
 - STIX uploads are content-type checked and limited to 5 MB and 10,000 objects.
 - Collector responses are JSON-only, size bounded, hashed, and never executed.
-- Transport checks reject oversized declared lengths and cap both streamed encoded and decoded bytes before JSON parsing. Only identity and bounded gzip encoding are accepted. Nesting and structural counts are limited before parsing, with a separate node-count check before downstream processing. The total HTTP budget covers retries, with a maximum one-second read wait between deadline checks. Retention/truncation metadata is separate from transport refusal.
+- Transport checks reject oversized declared lengths and cap both streamed encoded and decoded bytes before JSON parsing. Only identity and bounded gzip encoding are accepted. Nesting and structural counts are limited before parsing, with a separate node-count check before downstream processing. A cancellable async HTTP deadline covers connection, response headers, streamed body and retries, including slow trickled headers. Cancellation closes the transport rather than abandoning a background request. Retention/truncation metadata is separate from transport refusal.
 - Raw responses and provenance remain access-controlled.
 
 ## Secrets
