@@ -1,0 +1,3 @@
+# Matches pyproject.toml's build-system inputs. Compile to a hash-checked lock.
+setuptools>=75
+wheel

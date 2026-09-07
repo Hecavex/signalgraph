@@ -4,6 +4,8 @@ $python = Join-Path $projectRoot '.venv\Scripts\python.exe'
 
 Push-Location $projectRoot
 try {
+    & $python -m unittest discover -s scripts -p 'test_ci_*.py'
+    if ($LASTEXITCODE -ne 0) { throw 'Release assurance contract tests failed' }
     & $python -m pytest backend\tests
     if ($LASTEXITCODE -ne 0) { throw 'Backend tests failed' }
     & $python -m ruff check backend

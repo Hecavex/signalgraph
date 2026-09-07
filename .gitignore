@@ -39,3 +39,4 @@ data/
 artifacts/
 backups/
 *.log
+ci-health.json

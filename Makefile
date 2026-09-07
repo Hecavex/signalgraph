@@ -16,6 +16,7 @@ seed:
 	docker compose exec api signalgraph seed-demo
 
 test:
+	python -m unittest discover -s scripts -p 'test_ci_*.py'
 	python -m pytest backend/tests
 	cd frontend && npm test && npm run build
 
