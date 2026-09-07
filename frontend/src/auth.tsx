@@ -8,7 +8,6 @@ interface AuthContextValue {
   loading: boolean
   bootstrapRequired: boolean
   login: (email: string, password: string) => Promise<void>
-  bootstrap: (email: string, displayName: string, password: string) => Promise<void>
   logout: () => void
 }
 
@@ -53,8 +52,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       bootstrapRequired,
       login: (email, password) => authenticate('/auth/login', { email, password }),
-      bootstrap: (email, display_name, password) =>
-        authenticate('/auth/bootstrap', { email, display_name, password, role: 'admin' }),
       logout: () => {
         setToken(null)
         setUser(null)

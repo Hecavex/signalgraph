@@ -23,13 +23,15 @@ docker compose up --build -d
 docker compose ps
 ```
 
-Open `http://localhost:8080`. The first-run screen creates the first administrator. The API reference is available locally at `http://localhost:8000/api/docs`.
+Open `http://localhost:8080`. First ownership requires the deployment terminal, not a web request. The frontend and API bind to loopback by default. The API reference is available locally at `http://localhost:8000/api/docs`.
 
-Alternatively, create the first administrator from the container:
+Create the first administrator from the container:
 
 ```bash
 docker compose exec api signalgraph create-admin
 ```
+
+The command prompts for the password without displaying it. Competing first-owner commands are serialized by the database, and a second initial owner is rejected. Create additional users through authenticated administration. The retired `/auth/bootstrap` endpoint returns 410 even on a fresh installation. Do not expose the service remotely without TLS and the documented authentication/proxy limits.
 
 ## Verify the deployment
 

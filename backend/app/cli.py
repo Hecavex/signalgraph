@@ -14,9 +14,9 @@ from sqlalchemy import func, select, text
 from app.config import get_settings
 from app.database import Base, SessionLocal, engine
 from app.models import User
-from app.security import hash_password
 from app.seed import seed_demo
 from app.services.enrichment import ensure_collectors
+from app.services.first_owner import create_first_owner
 
 cli = typer.Typer(help="SignalGraph operational commands", no_args_is_help=True)
 console = Console()
@@ -61,16 +61,11 @@ def create_admin(
     if len(password) < 12:
         raise typer.BadParameter("Password must be at least 12 characters")
     with SessionLocal() as db:
-        if db.scalar(select(User).where(User.email == email.lower())):
-            raise typer.BadParameter("Email already exists")
-        db.add(
-            User(
-                email=email.lower(),
-                display_name=display_name,
-                password_hash=hash_password(password),
-                role="admin",
-            )
-        )
+        try:
+            create_first_owner(db, email, display_name, password)
+        except ValueError as exc:
+            db.rollback()
+            raise typer.BadParameter(str(exc)) from exc
         db.commit()
     console.print(f"[green]Created administrator[/] {email.lower()}")
 

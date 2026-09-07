@@ -16,12 +16,17 @@ os.environ.update(
 import pytest
 from fastapi.testclient import TestClient
 
-from app.database import Base, engine
+from app.database import Base, SessionLocal, engine
 from app.main import app
+from app.services.first_owner import create_first_owner
 
 
 @pytest.fixture(autouse=True)
-def clean_database():
+def clean_database(monkeypatch):
+    # Unit workflows do not require a running Redis. Distributed policy and
+    # outage cases are covered separately, then exercised with real Redis in CI.
+    monkeypatch.setattr("app.api.auth.reserve_login", lambda email: (email, "unit-lease"))
+    monkeypatch.setattr("app.api.auth.finish_login", lambda reservation, success: None)
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     yield
@@ -36,8 +41,11 @@ def client():
 
 @pytest.fixture
 def admin(client):
+    with SessionLocal() as db:
+        create_first_owner(db, "admin@example.com", "Admin Analyst", "StrongPassword2026")
+        db.commit()
     response = client.post(
-        "/api/v1/auth/bootstrap",
+        "/api/v1/auth/login",
         json={
             "email": "admin@example.com",
             "display_name": "Admin Analyst",
@@ -45,7 +53,7 @@ def admin(client):
             "role": "viewer",
         },
     )
-    assert response.status_code == 201, response.text
+    assert response.status_code == 200, response.text
     body = response.json()
     return {"headers": {"Authorization": f"Bearer {body['access_token']}"}, "user": body["user"]}
 

@@ -8,7 +8,6 @@ import { ErrorBanner, LogoMark } from '../components/Common'
 export default function LoginPage() {
   const auth = useAuth()
   const [email, setEmail] = useState('')
-  const [displayName, setDisplayName] = useState('Lead Analyst')
   const [password, setPassword] = useState('')
   const [visible, setVisible] = useState(false)
   const [working, setWorking] = useState(false)
@@ -19,8 +18,7 @@ export default function LoginPage() {
     setWorking(true)
     setError('')
     try {
-      if (auth.bootstrapRequired) await auth.bootstrap(email, displayName, password)
-      else await auth.login(email, password)
+      await auth.login(email, password)
     } catch (caught) {
       setError(caught instanceof ApiError ? caught.message : 'Authentication failed')
     } finally {
@@ -46,15 +44,15 @@ export default function LoginPage() {
         <form onSubmit={submit}>
           <div className="login-icon"><LockKeyhole size={22} /></div>
           <span className="eyebrow">{auth.bootstrapRequired ? 'FIRST RUN' : 'ANALYST ACCESS'}</span>
-          <h2>{auth.bootstrapRequired ? 'Create your administrator' : 'Return to the graph'}</h2>
-          <p>{auth.bootstrapRequired ? 'Initialize the first local account for this deployment.' : 'Sign in to your local intelligence workspace.'}</p>
+          <h2>{auth.bootstrapRequired ? 'Owner setup requires the terminal' : 'Return to the graph'}</h2>
+          <p>{auth.bootstrapRequired ? 'The deployment owner must create the first account locally. Web visitors cannot claim this installation.' : 'Sign in to your local intelligence workspace.'}</p>
           {error && <ErrorBanner message={error} />}
           {auth.bootstrapRequired && (
-            <label>Display name<input required value={displayName} onChange={(event) => setDisplayName(event.target.value)} /></label>
+            <div role="note"><code>docker compose exec api signalgraph create-admin</code><p>Run this on the deployment host, then sign in below. Additional users are managed by an authenticated administrator.</p></div>
           )}
           <label>Email<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
           <label>Password<div className="password-field"><input required minLength={12} type={visible ? 'text' : 'password'} value={password} onChange={(event) => setPassword(event.target.value)} /><button type="button" onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={16} /> : <Eye size={16} />}</button></div></label>
-          <button className="primary-button wide" disabled={working}>{working ? 'Authenticating…' : auth.bootstrapRequired ? 'Create administrator' : 'Sign in'}<ArrowRight size={16} /></button>
+          <button className="primary-button wide" disabled={working}>{working ? 'Authenticating…' : 'Sign in'}<ArrowRight size={16} /></button>
           <div className="login-assurance"><ShieldCheck size={17} /><span>Credentials stay on your infrastructure.<small>Argon2id password storage · short-lived session token</small></span></div>
         </form>
       </section>
