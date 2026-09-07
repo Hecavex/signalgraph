@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import json
 import threading
@@ -59,6 +60,22 @@ class Collector(ABC):
     def request_json(
         self, url: str, timeout: float, headers: dict[str, str] | None = None
     ) -> tuple[int, dict | list]:
+        # Collectors run in synchronous worker threads. Cancellation owns the
+        # actual async socket; no abandoned watchdog thread can keep reading.
+        return asyncio.run(self._request_json(url, timeout, headers))
+
+    async def _request_json(
+        self, url: str, timeout: float, headers: dict[str, str] | None
+    ) -> tuple[int, dict | list]:
+        try:
+            async with asyncio.timeout(timeout):
+                return await self._request_attempts(url, timeout, headers)
+        except TimeoutError as exc:
+            raise httpx.TimeoutException("Collector total deadline exceeded") from exc
+
+    async def _request_attempts(
+        self, url: str, timeout: float, headers: dict[str, str] | None
+    ) -> tuple[int, dict | list]:
         # URLs are constructed only by concrete collectors from allowlisted fixed origins.
         deadline = time.monotonic() + timeout
         for attempt in range(3):
@@ -66,12 +83,12 @@ class Collector(ABC):
             if remaining <= 0:
                 raise httpx.TimeoutException("Collector total deadline exceeded")
             try:
-                # Allow the remaining budget for initial response headers, then
-                # bound body-read waits separately so slow chunks cannot reset it.
+                # Inactivity limits complement the outer cancellation deadline,
+                # which also covers trickled headers and retry delays.
                 limits = httpx.Timeout(remaining)
                 request_headers = {"Accept-Encoding": "gzip, identity", **(headers or {})}
-                with (
-                    httpx.Client(
+                async with (
+                    httpx.AsyncClient(
                         timeout=limits,
                         follow_redirects=False,
                         headers=request_headers,
@@ -79,15 +96,12 @@ class Collector(ABC):
                     client.stream("GET", url) as response,
                 ):
                     response.raise_for_status()
-                    response.request.extensions["timeout"]["read"] = min(
-                        max(deadline - time.monotonic(), 0.001), 1.0,
-                    )
-                    payload = _bounded_json(response, deadline)
+                    payload = await _bounded_json(response, deadline)
                     return response.status_code, payload
             except (httpx.TimeoutException, httpx.NetworkError):
                 if attempt == 2 or time.monotonic() >= deadline:
                     raise
-                time.sleep(min(0.25 * (attempt + 1), max(deadline - time.monotonic(), 0)))
+                await asyncio.sleep(min(0.25 * (attempt + 1), max(deadline - time.monotonic(), 0)))
         raise AssertionError("Unreachable collector retry state")
 
     @abstractmethod
@@ -95,7 +109,7 @@ class Collector(ABC):
         raise NotImplementedError
 
 
-def _bounded_json(response: httpx.Response, deadline: float) -> dict | list:
+async def _bounded_json(response: httpx.Response, deadline: float) -> dict | list:
     settings = get_settings()
     cap = settings.raw_response_max_bytes
     declared = response.headers.get("content-length")
@@ -107,7 +121,7 @@ def _bounded_json(response: httpx.Response, deadline: float) -> dict | list:
     decoder = zlib.decompressobj(16 + zlib.MAX_WBITS) if encoding == "gzip" else None
     body = bytearray()
     wire_bytes = 0
-    for chunk in response.iter_raw():
+    async for chunk in response.aiter_raw():
         if time.monotonic() >= deadline:
             raise httpx.TimeoutException("Collector total deadline exceeded")
         wire_bytes += len(chunk)

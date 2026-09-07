@@ -1,5 +1,8 @@
 import gzip
 import json
+import socket
+import threading
+import time
 
 import httpx
 import pytest
@@ -9,13 +12,13 @@ from app.collectors.rdap_bootstrap import authoritative_url, bootstrap_kind
 from app.config import get_settings
 
 
-class BytesStream(httpx.SyncByteStream):
+class BytesStream(httpx.AsyncByteStream):
     def __init__(self, chunks, tick=None):
         self.chunks = chunks
         self.yielded = 0
         self.tick = tick
 
-    def __iter__(self):
+    async def __aiter__(self):
         for chunk in self.chunks:
             if self.tick:
                 self.tick()
@@ -24,9 +27,9 @@ class BytesStream(httpx.SyncByteStream):
 
 
 def transport(monkeypatch, handler):
-    original = httpx.Client
+    original = httpx.AsyncClient
     monkeypatch.setattr(
-        "app.collectors.base.httpx.Client",
+        "app.collectors.base.httpx.AsyncClient",
         lambda **kwargs: original(**kwargs, transport=httpx.MockTransport(handler)),
     )
 
@@ -169,3 +172,60 @@ def test_authoritative_redirect_is_not_followed(monkeypatch):
     with pytest.raises(httpx.HTTPStatusError):
         RDAPCollector().collect("example.com", "domain", 5)
     assert len(calls) == 2
+
+
+@pytest.mark.parametrize("phase", ["headers", "body"])
+def test_real_socket_trickle_deadline_closes_transport(phase, monkeypatch):
+    # Local synthetic socket only: each chunk arrives well inside the inactivity
+    # timeout, but the complete response never arrives within the total budget.
+    # This HTTP-only loopback test must not load the host certificate store or
+    # use deployment proxy settings; production TLS verification is unchanged.
+    original = httpx.AsyncClient
+    monkeypatch.setattr(
+        "app.collectors.base.httpx.AsyncClient",
+        lambda **kwargs: original(**kwargs, verify=False, trust_env=False),
+    )
+    listener = socket.socket()
+    listener.bind(("127.0.0.1", 0))
+    listener.listen(1)
+    listener.settimeout(3)
+    port = listener.getsockname()[1]
+    closed = threading.Event()
+    stop = threading.Event()
+
+    def serve():
+        try:
+            connection, _ = listener.accept()
+            with connection:
+                connection.settimeout(0.03)
+                connection.recv(4096)
+                prefix = b"HTTP/1.1 200 OK\r\n"
+                if phase == "body":
+                    prefix += b"Content-Length: 100000\r\n\r\n["
+                connection.sendall(prefix)
+                while not stop.wait(0.05):
+                    try:
+                        connection.sendall(b"X-Test: a\r\n" if phase == "headers" else b" ")
+                        if connection.recv(1) == b"":
+                            closed.set()
+                            return
+                    except TimeoutError:
+                        pass
+                    except OSError:
+                        closed.set()
+                        return
+        finally:
+            listener.close()
+
+    server = threading.Thread(target=serve, daemon=True)
+    server.start()
+    started = time.monotonic()
+    try:
+        with pytest.raises(httpx.TimeoutException, match="total deadline"):
+            VulnerabilityCollector().request_json(f"http://127.0.0.1:{port}/synthetic", 0.5)
+        assert time.monotonic() - started < 1.5
+        assert closed.wait(1), "Cancelled request left its transport open"
+    finally:
+        stop.set()
+        server.join(3)
+    assert not server.is_alive()
