@@ -6,6 +6,9 @@ COPY . .
 RUN npm run build
 
 FROM nginx:1.30.4-alpine@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c AS runtime
+# The pinned nginx image predates Alpine's util-linux security rebuild.
+# Keep this explicit until a reviewed base digest includes the patched package.
+RUN apk add --no-cache --upgrade 'libuuid=2.42.3-r1'
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 8080
