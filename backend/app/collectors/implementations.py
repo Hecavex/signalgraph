@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from urllib.parse import quote, urlencode
+import time
+from urllib.parse import urlencode
 
 import dns.resolver
 
 from app.collectors.base import CollectedRelation, Collector, CollectorResult
+from app.collectors.rdap_bootstrap import authoritative_url, bootstrap_kind
 from app.config import get_settings
 
 
@@ -51,20 +53,24 @@ class DNSCollector(Collector):
 class RDAPCollector(Collector):
     name = "rdap"
     supported_types = frozenset({"domain", "hostname", "ip_address", "asn"})
-    source_url = "https://rdap.org"
+    source_url = "https://data.iana.org/rdap/"
 
     def collect(self, value: str, entity_type: str, timeout: float) -> CollectorResult:
-        route = "domain" if entity_type in {"domain", "hostname"} else "ip"
-        identifier = value
-        if entity_type == "asn":
-            route, identifier = "autnum", value.removeprefix("AS")
-        url = f"{self.source_url}/{route}/{quote(identifier, safe='')}"
-        status, payload = self.request_json(url, timeout)
+        deadline = time.monotonic() + timeout
+        kind, route, identifier = bootstrap_kind(value, entity_type)
+        registry_url = f"{self.source_url}{kind}.json"
+        _, registry = self.request_json(registry_url, timeout)
+        url = authoritative_url(registry, kind, route, identifier)
+        # Neither IANA nor authoritative responses may redirect arbitrary clients.
+        # A missing/unavailable service is explicit, never a live-target fallback.
+        status, payload = self.request_json(url, max(deadline - time.monotonic(), 0))
         observations = {
             key: payload.get(key)
             for key in ("handle", "name", "startAddress", "endAddress", "country", "port43", "events")
             if isinstance(payload, dict) and payload.get(key) is not None
         }
+        observations["bootstrap_registry"] = registry_url
+        observations["authoritative_service"] = url
         relations: list[CollectedRelation] = []
         if isinstance(payload, dict):
             for entity in payload.get("entities", []):

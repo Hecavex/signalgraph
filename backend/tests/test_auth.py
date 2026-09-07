@@ -1,5 +1,8 @@
 from conftest import create_user
 
+from app.database import SessionLocal
+from app.services.first_owner import create_first_owner
+
 
 def test_first_admin_bootstrap_and_login(client):
     status = client.get("/api/v1/auth/status")
@@ -15,8 +18,12 @@ def test_first_admin_bootstrap_and_login(client):
             "role": "viewer",
         },
     )
-    assert created.status_code == 201
-    assert created.json()["user"]["role"] == "admin"
+    assert created.status_code == 410
+    assert client.get("/api/v1/auth/status").json() == {"bootstrap_required": True}
+    with SessionLocal() as db:
+        owner = create_first_owner(db, "first@example.com", "First Admin", "CorrectHorse2026")
+        assert owner.role == "admin"
+        db.commit()
     assert client.get("/api/v1/auth/status").json() == {"bootstrap_required": False}
 
     duplicate = client.post(
@@ -28,7 +35,7 @@ def test_first_admin_bootstrap_and_login(client):
             "role": "admin",
         },
     )
-    assert duplicate.status_code == 409
+    assert duplicate.status_code == 410
 
     rejected = client.post(
         "/api/v1/auth/login",

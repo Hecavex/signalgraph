@@ -28,6 +28,8 @@ All notable changes to SignalGraph will be documented here. The project follows 
 
 ### Fixed
 
+- Resolve authoritative RDAP services through IANA bootstrap data instead of rejecting the normal bootstrap redirect.
+
 - Use a standards-valid synthetic administrator email in the demo and README capture workflow.
 - Parse documented comma-separated `CORS_ORIGINS` values before Pydantic's complex-field decoding so clean production containers can start.
 - Make collector-default initialization safe across concurrent API workers.
@@ -35,6 +37,10 @@ All notable changes to SignalGraph will be documented here. The project follows 
 - Preserve the analyst's collector selection through enrichment completion and job retry.
 
 ### Security
+
+- Make initial administrator creation terminal-only and serialized, with loopback-only frontend publication.
+- Add Redis-backed account throttling, concurrent password-check leases and per-client proxy login limits. Missing users perform password verification and unavailable rate-limit storage fails closed.
+- Bound collector encoded/decoded transport bytes, JSON structure and total request deadlines before retaining or processing evidence.
 
 - Require pytest 9.0.3 or newer in the development lock to address the reported [PYSEC-2026-1845 advisory](https://github.com/pypa/advisory-database/blob/main/vulns/pytest/PYSEC-2026-1845.yaml). Runtime dependencies are unchanged by this test-tool update.
 

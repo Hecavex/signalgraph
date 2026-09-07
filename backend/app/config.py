@@ -30,7 +30,12 @@ class Settings(BaseSettings):
     auto_create_tables: bool = False
     celery_task_always_eager: bool = False
     collector_timeout_seconds: float = 15.0
-    raw_response_max_bytes: int = 1_000_000
+    raw_response_max_bytes: int = Field(default=1_000_000, ge=1024, le=10_000_000)
+    collector_max_json_depth: int = Field(default=32, ge=1, le=64)
+    collector_max_json_nodes: int = Field(default=50_000, ge=1, le=100_000)
+    login_max_failures: int = Field(default=8, ge=3, le=30)
+    login_failure_window_seconds: int = Field(default=900, ge=60, le=3600)
+    login_max_concurrent: int = Field(default=2, ge=1, le=4)
     urlscan_api_key: str | None = None
     risk_rules: dict[str, int] = Field(
         default_factory=lambda: {

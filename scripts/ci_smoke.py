@@ -29,11 +29,18 @@ def main():
     credentials = {"email": os.environ["E2E_EMAIL"], "password": os.environ["E2E_PASSWORD"]}
     request("/api/v1/auth/login", {**credentials, "password": "incorrect-synthetic-password"}, expected=401)
     request("/api/v1/entities", expected=401)
-    request("/api/v1/auth/bootstrap", {**credentials, "display_name": "CI", "role": "admin"}, expected=409)
+    request("/api/v1/auth/bootstrap", {**credentials, "display_name": "CI", "role": "admin"}, expected=410)
     token = request("/api/v1/auth/login", credentials)["access_token"]
     assert request("/api/v1/auth/me", token=token)["role"] == "admin"
     records = request("/api/v1/entities?q=northstar", token=token)
     assert records["total"] >= 2
+    failed = {"email": "rate-limit-synthetic@example.com", "password": "incorrect-synthetic-password"}
+    for _ in range(8):
+        request("/api/v1/auth/login", failed, expected=401)
+    request("/api/v1/auth/login", failed, expected=429)
+    # Account isolation: the real synthetic administrator is not locked by failures
+    # on another account. This exercises the real Redis Lua accounting, not mocks.
+    request("/api/v1/auth/login", credentials)
     print("Readiness, first-run lockout, authentication and synthetic search passed")
 
 
